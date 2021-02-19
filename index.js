@@ -15,15 +15,16 @@ function getUserInput(){
         currencyBag[i] = process.argv[i]
         i++
     }
+    currencyBag.splice(0,2)
     //Проверка на нули и отрицательные значения
     for(k = 0; k < currencyBag.length; k++){
-        if (currencyBag[k] <= 0){
+        if (currencyBag[k] <= 0 || true == isNaN(currencyBag[k])){
             return -9
             break
         }
     }
     //Проверка количества аргументов
-    currencyBag.splice(0,2)
+    
     invalidCountElementCheck = currencyBag.length / 3
 
     if( Number.isInteger(invalidCountElementCheck) == true)
@@ -51,12 +52,12 @@ function output(backPack){
 }
 
 function dataWorks(backPack){
-    var buyPrice = []
-    var beginPrice = []
-    var endPrice = []
-    
+    var buyedPrice = [], currencyValue = [], beginPrice = [], endPrice = [], currencyValue = [], onPeriodEndActivities = [], changesProc = [], pocketStartSum = 0
+
     for(k = 0; k < backPack.length; k=k+3){
-        buyPrice.push(backPack[k])
+        buyedPrice.push(backPack[k])
+        Number(buyedPrice[k])
+        pocketStartSum = pocketStartSum + buyedPrice[k]
     }
     for(k = 1; k < backPack.length; k=k+3){
         beginPrice.push(backPack[k])
@@ -64,5 +65,13 @@ function dataWorks(backPack){
     for(k = 2; k < backPack.length; k=k+3){
         endPrice.push(backPack[k])
     }
-    console.log("Закупочные цены:   " + buyPrice + "\nНачальные цены:    " + beginPrice +  "\nКонечные цены:     " + endPrice)
+    for(k = 0; k < buyedPrice.length; k++){
+        currencyValue[k] = buyedPrice[k] / beginPrice[k]
+        console.log("В валюте " + " " + currencyValue + " едениц")
+        onPeriodEndActivities[k] = currencyValue[k] * endPrice[k]
+        changesProc[k] = 1 - (buyedPrice / onPeriodEndActivities)
+        }
+    console.log("На конец периода ваши активы в рублях: " + onPeriodEndActivities + "\nВ процентах: " + changesProc)
+    console.log("Start cost " + pocketStartSum)
+    //console.log("Закупочные цены:   " + buyedPrice + "\nНачальные цены:    " + beginPrice +  "\nКонечные цены:     " + endPrice)
 }

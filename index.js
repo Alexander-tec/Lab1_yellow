@@ -1,14 +1,14 @@
-
-
-
-
-backPack = getUserInput()
-dataWorks(backPack)
-output(backPack)
+sortedData = getUserInput()
+dataWorks()
+output()
 
 function getUserInput(){
     let i = 2
-    let currencyBag = []
+    var currencyBag = []
+    var sortedData = []
+    if(process.argv[2] == "help" || process.argv[2] == "--help" || process.argv[2] == "-h"){
+        return "help"
+    }
     //Внесение значений в массив
     while(process.argv[i] != undefined)
     {
@@ -29,7 +29,18 @@ function getUserInput(){
 
     if( Number.isInteger(invalidCountElementCheck) == true)
     {
-        return currencyBag
+        i = 0
+        for(k = 0; k < currencyBag.length; k = k + 3){
+            sortedData.push({rubbleCount: 0, startPrice: 0, endPrice: 0, currencyCount: 0, endCount: 0, difference: 0, profitPercent: 0})
+            sortedData[i].rubbleCount = Number(currencyBag[k])
+            sortedData[i].startPrice = Number(currencyBag[k+1])
+            sortedData[i].endPrice = Number(currencyBag[k+2])
+            sortedData[i].currencyCount = Number(sortedData[i].rubbleCount) / Number(sortedData[i].startPrice)
+            sortedData[i].currencyCount = sortedData[i].currencyCount.toFixed(2)
+            i++
+            
+        }
+        return sortedData
     }
     else
     {
@@ -38,40 +49,47 @@ function getUserInput(){
     
 }
 
-function output(backPack){
-    if(backPack == -9){
-        console.log("Error: Invalid arguments")
+function output(){
+    if(sortedData == -9){
+        console.log("Error: Invalid arguments. Type 'help' for see help page")
     }
-    else if(backPack == -10){
-        console.log("Error: Invalid arguments count")
+    else if(sortedData == -10){
+        console.log("Error: Invalid arguments count. Type 'help' for see help page")
+    }
+    else if(sortedData == "help"){
+        console.log("node filename.js <Your invests in rubbles> <Buying price> <End/current price>")
     }
     else{
-        console.log("All pass")
+        //console.log(sortedData)
+        console.log("В вашем портефеле " + sortedData[0].activitiesCount + " актива/ов на общую сумму: " + sortedData[0].sum + " руб.\nПрибыль/потери за период: " + sortedData[0].allProfit + " рублей " + "(" + sortedData[0].allProfitPercent + "%)" + "\n")
+        for(i = 1; i < sortedData.length; i++){
+
+            console.log("В валюте " + i + " прибыль/убыток составил(а): " + sortedData[i].difference.toFixed(2) + " (" + sortedData[i].profitPercent + "%)")
+        }
     }
     
 }
 
-function dataWorks(backPack){
-    var buyedPrice = [], currencyValue = [], beginPrice = [], endPrice = [], currencyValue = [], onPeriodEndActivities = [], changesProc = [], pocketStartSum = 0
-
-    for(k = 0; k < backPack.length; k=k+3){
-        buyedPrice.push(backPack[k])
-        Number(buyedPrice[k])
-        pocketStartSum = pocketStartSum + buyedPrice[k]
+function dataWorks(){
+    let sum = 0,
+    allProfit = 0,
+    allProfitPercent = 0
+    for(i = 0; i < sortedData.length; i++){
+        sum += sortedData[i].rubbleCount
+        sortedData[i].endCount = sortedData[i].endPrice * sortedData[i].currencyCount
+        sortedData[i].endCount = sortedData[i].endCount.toFixed(2)
+        sortedData[i].profitPercent = ((sortedData[i].endCount / sortedData[i].rubbleCount) - 1) * 100
+        sortedData[i].profitPercent = sortedData[i].profitPercent.toFixed(2)
+        sortedData[i].difference = sortedData[i].endCount - sortedData[i].rubbleCount
+        allProfit = allProfit + (sortedData[i].endCount - sortedData[i].rubbleCount)
+        allProfitPercent += Number(sortedData[i].profitPercent)
     }
-    for(k = 1; k < backPack.length; k=k+3){
-        beginPrice.push(backPack[k])
-    }
-    for(k = 2; k < backPack.length; k=k+3){
-        endPrice.push(backPack[k])
-    }
-    for(k = 0; k < buyedPrice.length; k++){
-        currencyValue[k] = buyedPrice[k] / beginPrice[k]
-        console.log("В валюте " + " " + currencyValue + " едениц")
-        onPeriodEndActivities[k] = currencyValue[k] * endPrice[k]
-        changesProc[k] = 1 - (buyedPrice / onPeriodEndActivities)
-        }
-    console.log("На конец периода ваши активы в рублях: " + onPeriodEndActivities + "\nВ процентах: " + changesProc)
-    console.log("Start cost " + pocketStartSum)
-    //console.log("Закупочные цены:   " + buyedPrice + "\nНачальные цены:    " + beginPrice +  "\nКонечные цены:     " + endPrice)
+    allProfitPercent = Number(allProfit) / Number(sum) * 100
+    sortedData.unshift({sum: sum, allProfit: allProfit.toFixed(2), allProfitPercent: allProfitPercent.toFixed(2), activitiesCount: sortedData.length})
+    return sortedData
+}
+//tests()
+function tests(){
+    let test = -600 / 9000
+    console.log("TEST: " + test)
 }

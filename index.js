@@ -1,6 +1,14 @@
 sortedData = getUserInput()
-dataWorks()
-output()
+if(sortedData == -9 || sortedData == -10 || sortedData == "help"){
+    console.log(sortedData)
+    output()
+}
+else{
+    dataWorks()
+    output()
+}
+//dataWorks()
+
 
 function getUserInput(){
     let i = 2

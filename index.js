@@ -7,6 +7,13 @@ else{
     dataWorks()
     output()
 }
+if(sortedData == "test"){
+    console.log("test")
+    output()
+}else{
+    dataWorks()
+    output()
+}
 //dataWorks()
 //test
 
@@ -16,6 +23,9 @@ function getUserInput(){
     var sortedData = []
     if(process.argv[2] == "help" || process.argv[2] == "--help" || process.argv[2] == "-h"){
         return "help"
+    }
+    if(process.argv[2] == "test"){
+        return "test"
     }
     //Внесение значений в массив
     while(process.argv[i] != undefined)
@@ -66,6 +76,9 @@ function output(){
     }
     else if(sortedData == "help"){
         console.log("node filename.js <Your invests in rubbles> <Buying price> <End/current price>")
+    }
+    else if(sortedData == "test"){
+        console.log("test")
     }
     else{
         //console.log(sortedData)
